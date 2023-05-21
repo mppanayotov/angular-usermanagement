@@ -1,0 +1,46 @@
+/* You can add global styles to this file, and also import other style files */
+// Generic
+@import "assets/scss/generic/variables";
+@import "assets/scss/generic/functions";
+@import "assets/scss/generic/mixins";
+@import "assets/scss/generic/reset";
+@import "assets/scss/generic/base";
+
+// Components
+@import "assets/scss/components/wrapper";
+@import "assets/scss/components/shell";
+
+// User list overrides
+.user-list {
+  .user-list__head .mdc-floating-label {
+    cursor: text;
+  }
+  table button:not(:hover) {
+    color: rgba(0, 0, 0, 0.38);
+  }
+  .mat-mdc-paginator-container {
+    justify-content: space-between;
+  }
+  .mat-mdc-slide-toggle
+    .mdc-switch.mdc-switch--unselected:enabled
+    .mdc-switch__handle::after {
+    background-color: #e53935 !important;
+  }
+  .mat-mdc-slide-toggle
+    .mdc-switch.mdc-switch--unselected:enabled:active
+    .mdc-switch__handle::after,
+  .mat-mdc-slide-toggle
+    .mdc-switch.mdc-switch--unselected:enabled:focus
+    .mdc-switch__handle::after,
+  .mat-mdc-slide-toggle
+    .mdc-switch.mdc-switch--unselected:hover
+    .mdc-switch__handle::after {
+    background-color: #b71c1c !important;
+  }
+  .mat-mdc-slide-toggle .mdc-switch:enabled .mdc-switch__track::before {
+    background-color: #e57373 !important;
+  }
+  .mdc-data-table__header-cell {
+    border-bottom-width: 2px;
+  }
+}

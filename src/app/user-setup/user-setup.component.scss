@@ -1,0 +1,23 @@
+.user-setup {
+  h2 {
+    margin: 0;
+    font-size: 36px;
+    line-height: 1.333;
+  }
+  .user-setup__head {
+    position: relative;
+    display: flex;
+    padding: 105px 0 55px 90px;
+  }
+  .user-setup__head button {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    transform: translateY(50%);
+    color: #fff;
+    background-color: #c6c6c6;
+  }
+  .user-setup__body {
+    padding: 50px 0;
+  }
+}

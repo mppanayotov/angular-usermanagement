@@ -1,0 +1,28 @@
+<div class="user-setup" *ngIf="user">
+  <div
+    class="mat-elevation-z8"
+    style="position: relative; background-color: #fff"
+  >
+    <div class="shell">
+      <div class="user-setup__head">
+        <button mat-fab disabled>
+          <mat-icon>settings</mat-icon>
+        </button>
+        <h2>User Setup</h2>
+      </div>
+    </div>
+  </div>
+  <div class="user-setup__body">
+    <div class="shell">
+      <ul>
+        <li *ngFor="let item of user | keyvalue">
+          <b>{{ item.key }}:</b> {{ item.value }}
+        </li>
+      </ul>
+
+      <button mat-fab extended color="primary" (click)="goBack()">
+        Save Changes
+      </button>
+    </div>
+  </div>
+</div>

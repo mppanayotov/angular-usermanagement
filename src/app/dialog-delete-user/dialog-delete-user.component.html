@@ -1,0 +1,14 @@
+<h1 mat-dialog-title>Delete User</h1>
+<div mat-dialog-content>
+  {{ data.name }}
+
+  <ul>
+    <li *ngFor="let item of data | keyvalue">
+      <b>{{ item.key }}:</b> {{ item.value }}
+    </li>
+  </ul>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</div>

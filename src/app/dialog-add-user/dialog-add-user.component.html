@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>{{ data.sendToDialog }}</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Add new user</mat-label>
+    <input matInput [(ngModel)]="data.result" />
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="data.result" cdkFocusInitial>
+    Ok
+  </button>
+</div>
