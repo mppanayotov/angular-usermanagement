@@ -7,7 +7,7 @@ export interface DialogData {
 }
 
 @Component({
-  selector: 'app-dialog-add-user',
+  selector: 'angular-usermanagement-dialog-add-user',
   templateUrl: './dialog-add-user.component.html',
   styleUrls: ['./dialog-add-user.component.scss'],
 })

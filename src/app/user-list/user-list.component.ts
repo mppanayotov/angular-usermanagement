@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild, Inject } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -38,7 +38,7 @@ const EXAMPLE_DATA: UserListItem[] = [
 ];
 
 @Component({
-  selector: 'app-user-list',
+  selector: 'angular-usermanagement-user-list',
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss'],
 })
@@ -48,7 +48,7 @@ export class UserListComponent implements AfterViewInit {
   dataSource: MatTableDataSource<UserListItem> = new MatTableDataSource(
     EXAMPLE_DATA
   );
-  addDialogResult: string = '';
+  addDialogResult = '';
   deleteDialogResult?: UserListComponent;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */

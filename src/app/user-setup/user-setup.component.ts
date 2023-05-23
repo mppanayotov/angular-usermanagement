@@ -33,7 +33,7 @@ const EXAMPLE_DATA: UserListItem[] = [
 ];
 
 @Component({
-  selector: 'app-user-setup',
+  selector: 'angular-usermanagement-user-setup',
   templateUrl: './user-setup.component.html',
   styleUrls: ['./user-setup.component.scss'],
 })
@@ -47,6 +47,7 @@ export class UserSetupComponent implements OnInit {
   }
 
   getUser(): void {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const id = parseInt(this.route.snapshot.paramMap.get('id')!, 10);
     this.user = EXAMPLE_DATA.find((user) => (user.id = id));
   }

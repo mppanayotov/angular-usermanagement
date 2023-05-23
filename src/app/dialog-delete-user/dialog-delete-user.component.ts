@@ -8,7 +8,7 @@ export interface DialogData {
 }
 
 @Component({
-  selector: 'app-dialog--delete-user',
+  selector: 'angular-usermanagement-dialog-delete-user',
   templateUrl: './dialog-delete-user.component.html',
   styleUrls: ['./dialog-delete-user.component.scss'],
 })

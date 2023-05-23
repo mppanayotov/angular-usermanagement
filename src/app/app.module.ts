@@ -1,13 +1,10 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-import { AppRoutingModule } from './app-routing.module';
+import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
+import { appRoutes } from './app.routes';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { UserListComponent } from './user-list/user-list.component';
-
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
@@ -17,10 +14,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
-
+import { UserListComponent } from './user-list/user-list.component';
 import { UserSetupComponent } from './user-setup/user-setup.component';
 import { DialogAddUserComponent } from './dialog-add-user/dialog-add-user.component';
 import { DialogDeleteUserComponent } from './dialog-delete-user/dialog-delete-user.component';
+import { StoreModule } from '@ngrx/store';
 
 @NgModule({
   declarations: [
@@ -32,7 +30,7 @@ import { DialogDeleteUserComponent } from './dialog-delete-user/dialog-delete-us
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
+    RouterModule.forRoot(appRoutes, { initialNavigation: 'enabledBlocking' }),
     BrowserAnimationsModule,
     MatTableModule,
     MatPaginatorModule,
@@ -45,6 +43,7 @@ import { DialogDeleteUserComponent } from './dialog-delete-user/dialog-delete-us
     MatDialogModule,
     FormsModule,
     ReactiveFormsModule,
+    StoreModule.forRoot({}, {}),
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -1,14 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
 // Generic
-@import "assets/scss/generic/variables";
-@import "assets/scss/generic/functions";
-@import "assets/scss/generic/mixins";
-@import "assets/scss/generic/reset";
-@import "assets/scss/generic/base";
+@import 'assets/scss/generic/variables';
+@import 'assets/scss/generic/functions';
+@import 'assets/scss/generic/mixins';
+@import 'assets/scss/generic/reset';
+@import 'assets/scss/generic/base';
 
 // Components
-@import "assets/scss/components/wrapper";
-@import "assets/scss/components/shell";
+@import 'assets/scss/components/wrapper';
+@import 'assets/scss/components/shell';
 
 // User list overrides
 .user-list {
@@ -42,5 +42,9 @@
   }
   .mdc-data-table__header-cell {
     border-bottom-width: 2px;
+  }
+  .mat-mdc-standard-chip:not(.mdc-evolution-chip--selected)
+    .mdc-evolution-chip__action--primary:before {
+    border: none;
   }
 }
