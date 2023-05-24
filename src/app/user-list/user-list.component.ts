@@ -5,37 +5,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogAddUserComponent } from '../dialog-add-user/dialog-add-user.component';
 import { DialogDeleteUserComponent } from '../dialog-delete-user/dialog-delete-user.component';
-
-export interface UserListItem {
-  name: string;
-  id: number;
-  role: string;
-  status: string;
-}
-
-// TODO: replace this with real data from your application
-const EXAMPLE_DATA: UserListItem[] = [
-  { id: 1, name: 'Hydrogen', role: 'admin', status: 'active' },
-  { id: 2, name: 'Helium', role: 'user', status: 'disabled' },
-  { id: 3, name: 'Lithium', role: 'admin', status: 'disabled' },
-  { id: 4, name: 'Beryllium', role: 'user', status: 'active' },
-  { id: 5, name: 'Boron', role: 'user', status: 'active' },
-  { id: 6, name: 'Carbon', role: 'user', status: 'active' },
-  { id: 7, name: 'Nitrogen', role: 'user', status: 'active' },
-  { id: 8, name: 'Oxygen', role: 'user', status: 'active' },
-  { id: 9, name: 'Fluorine', role: 'user', status: 'active' },
-  { id: 10, name: 'Neon', role: 'user', status: 'active' },
-  { id: 11, name: 'Sodium', role: 'user', status: 'active' },
-  { id: 12, name: 'Magnesium', role: 'user', status: 'active' },
-  { id: 13, name: 'Aluminum', role: 'user', status: 'active' },
-  { id: 14, name: 'Silicon', role: 'user', status: 'active' },
-  { id: 15, name: 'Phosphorus', role: 'user', status: 'active' },
-  { id: 16, name: 'Sulfur', role: 'user', status: 'active' },
-  { id: 17, name: 'Chlorine', role: 'user', status: 'active' },
-  { id: 18, name: 'Argon', role: 'user', status: 'active' },
-  { id: 19, name: 'Potassium', role: 'user', status: 'active' },
-  { id: 20, name: 'Calcium', role: 'user', status: 'active' },
-];
+import { Store } from '@ngrx/store';
+import { UsersEntity } from '../+state/users.models';
+import { selectAllUsers } from '../+state/users.selectors';
 
 @Component({
   selector: 'angular-usermanagement-user-list',
@@ -45,20 +17,23 @@ const EXAMPLE_DATA: UserListItem[] = [
 export class UserListComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  dataSource: MatTableDataSource<UserListItem> = new MatTableDataSource(
-    EXAMPLE_DATA
-  );
+
+  users$ = this.store.select(selectAllUsers);
+  dataSource: MatTableDataSource<UsersEntity> = new MatTableDataSource();
   addDialogResult = '';
   deleteDialogResult?: UserListComponent;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns: string[] = ['id', 'name', 'role', 'status', 'actions'];
 
-  constructor(public dialog: MatDialog) {}
+  constructor(private store: Store, public dialog: MatDialog) {}
 
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    this.users$.subscribe((users) => {
+      this.dataSource = new MatTableDataSource(users);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    });
   }
 
   applyFilter(event: Event) {
