@@ -1,14 +1,16 @@
-<h1 mat-dialog-title>Delete User</h1>
-<div mat-dialog-content>
-  {{ data.name }}
+<div class="dialog-delete-user">
+  <h1 mat-dialog-title>Delete User</h1>
+  <div mat-dialog-content>
+    {{ data.name }}
 
-  <ul>
-    <li *ngFor="let item of data | keyvalue">
-      <b>{{ item.key }}:</b> {{ item.value }}
-    </li>
-  </ul>
-</div>
-<div mat-dialog-actions>
-  <button mat-button (click)="dialogRef.close()">Cancel</button>
-  <button mat-button [mat-dialog-close]="data">Delete</button>
+    <ul>
+      <li *ngFor="let item of data | keyvalue">
+        <b>{{ item.key }}:</b> {{ item.value }}
+      </li>
+    </ul>
+  </div>
+  <div mat-dialog-actions class="dialog-delete-user__actions">
+    <button mat-button (click)="dialogRef.close()">Cancel</button>
+    <button mat-button [mat-dialog-close]="data">Delete</button>
+  </div>
 </div>

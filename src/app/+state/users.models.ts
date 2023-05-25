@@ -8,4 +8,5 @@ export interface UsersEntity {
   role: string;
   status: string;
   email: string;
+  permissions: [{ superadmin: string; value: string }];
 }

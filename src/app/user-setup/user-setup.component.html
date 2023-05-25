@@ -19,7 +19,49 @@
           <b>{{ item.key }}:</b> {{ item.value }}
         </li>
       </ul>
-
+      <mat-tree
+        [dataSource]="dataSource"
+        [treeControl]="treeControl"
+        class="user-setup__tree"
+      >
+        <mat-tree-node
+          *matTreeNodeDef="let node"
+          matTreeNodeToggle
+          matTreeNodePadding
+        >
+          <button mat-icon-button disabled></button>
+          <mat-checkbox
+            color="primary"
+            class="checklist-leaf-node"
+            [checked]="checklistSelection.isSelected(node)"
+            (change)="todoLeafItemSelectionToggle(node)"
+            >{{ node.item }}</mat-checkbox
+          >
+        </mat-tree-node>
+        <mat-tree-node
+          *matTreeNodeDef="let node; when: hasChild"
+          matTreeNodePadding
+        >
+          <button
+            mat-icon-button
+            matTreeNodeToggle
+            [attr.aria-label]="'Toggle ' + node.item"
+          >
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{
+                treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'
+              }}
+            </mat-icon>
+          </button>
+          <mat-checkbox
+            color="primary"
+            [checked]="descendantsAllSelected(node)"
+            [indeterminate]="descendantsPartiallySelected(node)"
+            (change)="todoItemSelectionToggle(node)"
+            >{{ node.item }}</mat-checkbox
+          >
+        </mat-tree-node>
+      </mat-tree>
       <button mat-fab extended color="primary" (click)="goBack()">
         Save Changes
       </button>
