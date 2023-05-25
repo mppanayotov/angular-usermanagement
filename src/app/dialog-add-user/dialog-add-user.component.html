@@ -1,13 +1,80 @@
-<h1 mat-dialog-title>{{ data.sendToDialog }}</h1>
-<div mat-dialog-content>
-  <mat-form-field>
-    <mat-label>Add new user</mat-label>
-    <input matInput [(ngModel)]="data.result" />
-  </mat-form-field>
-</div>
-<div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">No Thanks</button>
-  <button mat-button [mat-dialog-close]="data.result" cdkFocusInitial>
-    Ok
-  </button>
+<div class="dialog-add-user">
+  <h1 mat-dialog-title>Add user</h1>
+  <div mat-dialog-content>
+    <form [formGroup]="form">
+      <div class="dialog-add-user__row">
+        <div class="dialog-add-user__col">
+          <mat-form-field class="dialog-add-user__field">
+            <mat-label>First Name</mat-label>
+            <input
+              matInput
+              placeholder="First Name"
+              formControlName="firstName"
+              required
+            />
+            <mat-error *ngIf="form.controls.firstName.invalid">{{
+              getErrorMessage(form.controls.firstName)
+            }}</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="dialog-add-user__col">
+          <mat-form-field class="dialog-add-user__field">
+            <mat-label>Last Name</mat-label>
+            <input
+              matInput
+              placeholder="Last Name"
+              formControlName="lastName"
+              required
+            />
+            <mat-error *ngIf="form.controls.lastName.invalid">{{
+              getErrorMessage(form.controls.lastName)
+            }}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="dialog-add-user__row">
+        <div class="dialog-add-user__col">
+          <mat-form-field class="dialog-add-user__field">
+            <mat-label>Email</mat-label>
+            <input
+              matInput
+              placeholder="Email"
+              formControlName="email"
+              required
+            />
+            <mat-error *ngIf="form.controls.email.invalid">{{
+              getErrorMessage(form.controls.email)
+            }}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="dialog-add-user__row">
+        <div class="dialog-add-user__col">
+          <mat-form-field class="dialog-add-user__field">
+            <mat-label>Role</mat-label>
+            <mat-select formControlName="role" required>
+              <mat-option>--</mat-option>
+              <mat-option *ngFor="let role of roles" [value]="role">
+                {{ role }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="form.controls.role.invalid">{{
+              getErrorMessage(form.controls.role)
+            }}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div mat-dialog-actions class="dialog-add-user__actions">
+    <button mat-button (click)="dialogRef.close()">Cancel</button>
+    <button
+      mat-button
+      [mat-dialog-close]="form.value"
+      type="submit"
+      [disabled]="form.invalid"
+    >
+      Add
+    </button>
+  </div>
 </div>

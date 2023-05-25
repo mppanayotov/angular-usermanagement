@@ -26,15 +26,30 @@ export const initialUsersState: UsersState = usersAdapter.getInitialState({
 
 const reducer = createReducer(
   initialUsersState,
-  on(UsersActions.initUsers, (state) => ({
-    ...state,
-    loaded: false,
-    error: null,
-  })),
+  on(
+    UsersActions.initUsers,
+    (state): UsersState => ({
+      ...state,
+      loaded: false,
+      error: null,
+    })
+  ),
   on(UsersActions.loadUsersSuccess, (state, { users }) =>
     usersAdapter.setAll(users, { ...state, loaded: true })
   ),
-  on(UsersActions.loadUsersFailure, (state, { error }) => ({ ...state, error }))
+  on(
+    UsersActions.loadUsersFailure,
+    (state, { error }): UsersState => ({
+      ...state,
+      error,
+    })
+  ),
+  on(UsersActions.removeUser, (state, { userId }) => {
+    return usersAdapter.removeOne(userId, state);
+  }),
+  on(UsersActions.addUser, (state, { user }) => {
+    return usersAdapter.addOne(user, state);
+  })
 );
 
 export function usersReducer(state: UsersState | undefined, action: Action) {

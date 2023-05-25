@@ -44,4 +44,7 @@
   .user-list__admin-chip:not(.mat-mdc-chip-highlighted) {
     background: none;
   }
+  .user-list__no-data {
+    height: 52px;
+  }
 }

@@ -8,6 +8,7 @@ import { DialogDeleteUserComponent } from '../dialog-delete-user/dialog-delete-u
 import { Store } from '@ngrx/store';
 import { UsersEntity } from '../+state/users.models';
 import { selectAllUsers } from '../+state/users.selectors';
+import * as UsersActions from '../+state/users.actions';
 
 @Component({
   selector: 'angular-usermanagement-user-list',
@@ -20,8 +21,6 @@ export class UserListComponent implements AfterViewInit {
 
   users$ = this.store.select(selectAllUsers);
   dataSource: MatTableDataSource<UsersEntity> = new MatTableDataSource();
-  addDialogResult = '';
-  deleteDialogResult?: UserListComponent;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns: string[] = ['id', 'name', 'role', 'status', 'actions'];
@@ -47,27 +46,33 @@ export class UserListComponent implements AfterViewInit {
 
   openAddDialog(): void {
     const dialogRef = this.dialog.open(DialogAddUserComponent, {
-      data: { sendToDialog: 'send to dialog' },
+      data: {},
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log('The dialog was closed');
-      console.log('Result: ' + result);
-      this.addDialogResult = result;
+      console.table('Add dialog was closed. Add result:', result ?? 'cancel');
     });
   }
 
   openDeleteDialog(row: UserListComponent): void {
-    console.log(row);
-
     const dialogRef = this.dialog.open(DialogDeleteUserComponent, {
       data: row,
     });
 
-    dialogRef.afterClosed().subscribe((result: UserListComponent) => {
-      console.log('The dialog was closed');
-      console.log('Result: ' + result);
-      this.deleteDialogResult = result;
+    dialogRef.afterClosed().subscribe((result) => {
+      console.table(
+        'Delete dialog was closed. Delete result:',
+        result ?? 'cancel'
+      );
+      this.onRemove(result?.id);
     });
+  }
+
+  // onAdd(userId: string) {
+  //   this.store.dispatch(UsersActions.addUser({ userId }));
+  // }
+
+  onRemove(userId: string) {
+    this.store.dispatch(UsersActions.removeUser({ userId }));
   }
 }

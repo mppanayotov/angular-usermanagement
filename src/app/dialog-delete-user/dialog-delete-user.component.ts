@@ -4,7 +4,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 export interface DialogData {
   name: string;
   id: number;
-  status: string;
 }
 
 @Component({
@@ -17,8 +16,4 @@ export class DialogDeleteUserComponent {
     public dialogRef: MatDialogRef<DialogDeleteUserComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
 }

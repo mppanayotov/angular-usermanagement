@@ -3,7 +3,9 @@
  */
 export interface UsersEntity {
   id: number;
-  name: string;
+  firstName: string;
+  lastName: string;
   role: string;
   status: string;
+  email: string;
 }

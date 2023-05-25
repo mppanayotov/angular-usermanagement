@@ -12,3 +12,13 @@ export const loadUsersFailure = createAction(
   '[Users/API] Load Users Failure',
   props<{ error: any }>()
 );
+
+export const removeUser = createAction(
+  '[Users] Remove User',
+  props<{ userId: string }>()
+);
+
+export const addUser = createAction(
+  '[Users] Add User',
+  props<{ user: UsersEntity }>()
+);

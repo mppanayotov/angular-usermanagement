@@ -15,6 +15,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { UserListComponent } from './user-list/user-list.component';
 import { UserSetupComponent } from './user-setup/user-setup.component';
 import { DialogAddUserComponent } from './dialog-add-user/dialog-add-user.component';
@@ -48,6 +50,8 @@ import { UsersEffects } from './+state/users.effects';
     MatChipsModule,
     MatDialogModule,
     FormsModule,
+    MatSelectModule,
+    MatFormFieldModule,
     ReactiveFormsModule,
     StoreModule.forRoot(
       {},
