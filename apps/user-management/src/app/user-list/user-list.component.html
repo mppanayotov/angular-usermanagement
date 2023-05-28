@@ -50,7 +50,7 @@
             *matCellDef="let row"
             [ngStyle]="{ opacity: row.status === 'disabled' ? 0.5 : 1 }"
           >
-            {{ row.name }}
+            {{ row.firstName + ' ' + row.lastName }}
           </td>
         </ng-container>
         <!-- Role Column -->

@@ -2,6 +2,18 @@
  * Interface for the 'SharedUsers' data
  */
 export interface SharedUsersEntity {
-  id: string | number; // Primary ID
-  name: string;
+  id: number;
+  firstName: string;
+  lastName: string;
+  role: string;
+  status: string;
+  email: string;
+  permissions: {
+    superadmin: boolean;
+    permissionGroupName: string;
+    permissionGroupPermissions: {
+      permission: string;
+      value: null | string;
+    };
+  };
 }

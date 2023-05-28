@@ -69,14 +69,10 @@ export class ChecklistDatabase {
     return this.dataChange.value;
   }
 
-  constructor() {
-    this.initialize();
-  }
-
-  initialize() {
+  initialize(treeData: SharedUsersEntity['permissions']) {
     // Build the tree nodes from Json object. The result is a list of `TodoItemNode` with nested
     //     file node as children.
-    const data = this.buildFileTree(TREE_DATA, 0);
+    const data = this.buildFileTree(treeData, 0);
 
     // Notify the change.
     this.dataChange.next(data);
@@ -95,8 +91,6 @@ export class ChecklistDatabase {
       if (value != null) {
         if (typeof value === 'object') {
           node.children = this.buildFileTree(value, level + 1);
-        } else {
-          node.item = value;
         }
       }
 
@@ -129,12 +123,8 @@ export class UserSetupComponent implements OnInit {
   selectedParent: TodoItemFlatNode | null = null;
 
   /** The new item's name */
-  newItemName = '';
-
   treeControl: FlatTreeControl<TodoItemFlatNode>;
-
   treeFlattener: MatTreeFlattener<TodoItemNode, TodoItemFlatNode>;
-
   dataSource: MatTreeFlatDataSource<TodoItemNode, TodoItemFlatNode>;
 
   /** The selection for checklist */
@@ -176,6 +166,7 @@ export class UserSetupComponent implements OnInit {
     const id = parseInt(this.route.snapshot.paramMap.get('id')!, 10);
     this.users$.subscribe((users) => {
       this.user = users.find((user) => user.id == id);
+      this.user && this._database.initialize(this.user?.permissions);
     });
   }
 
@@ -184,13 +175,9 @@ export class UserSetupComponent implements OnInit {
   }
 
   getLevel = (node: TodoItemFlatNode) => node.level;
-
   isExpandable = (node: TodoItemFlatNode) => node.expandable;
-
   getChildren = (node: TodoItemNode): TodoItemNode[] => node.children;
-
   hasChild = (_: number, _nodeData: TodoItemFlatNode) => _nodeData.expandable;
-
   hasNoContent = (_: number, _nodeData: TodoItemFlatNode) =>
     _nodeData.item === '';
 
