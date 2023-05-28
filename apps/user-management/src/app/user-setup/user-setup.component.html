@@ -34,7 +34,7 @@
             color="primary"
             class="checklist-leaf-node"
             [checked]="checklistSelection.isSelected(node)"
-            (change)="todoLeafItemSelectionToggle(node)"
+            (change)="permissionLeafItemSelectionToggle(node)"
             >{{ node.item }}</mat-checkbox
           >
         </mat-tree-node>
@@ -57,7 +57,7 @@
             color="primary"
             [checked]="descendantsAllSelected(node)"
             [indeterminate]="descendantsPartiallySelected(node)"
-            (change)="todoItemSelectionToggle(node)"
+            (change)="permissionItemSelectionToggle(node)"
             >{{ node.item }}</mat-checkbox
           >
         </mat-tree-node>

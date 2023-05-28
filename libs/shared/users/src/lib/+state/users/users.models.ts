@@ -13,7 +13,7 @@ export interface SharedUsersEntity {
     permissionGroupName: string;
     permissionGroupPermissions: {
       permission: string;
-      value: null | string;
+      value: boolean;
     };
   };
 }
