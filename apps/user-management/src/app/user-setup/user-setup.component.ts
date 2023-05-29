@@ -10,6 +10,7 @@ import { Location } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { SharedUsersEntity } from '@angular-usermanagement/shared/users';
 import { selectAllUsers } from '@angular-usermanagement/shared/users';
+import * as SharedUsersActions from '@angular-usermanagement/shared/users';
 import { BehaviorSubject } from 'rxjs';
 
 /**
@@ -27,6 +28,11 @@ export class PermissionItemFlatNode {
   level = 0;
   expandable = false;
   isChecked?: boolean;
+}
+
+export interface PatchPermissionEntry {
+  name: string;
+  value: boolean;
 }
 
 /**
@@ -85,7 +91,10 @@ export class ChecklistDatabase {
 })
 export class UserSetupComponent implements OnInit {
   users$ = this.store.select(selectAllUsers);
+  users: SharedUsersEntity[] = [];
   user?: SharedUsersEntity;
+  updatedUser?: SharedUsersEntity;
+
   /** Map from flat node to nested node. This helps us finding the nested node to be modified */
   flatNodeMap = new Map<PermissionItemFlatNode, PermissionItemNode>();
 
@@ -138,7 +147,8 @@ export class UserSetupComponent implements OnInit {
   setUser(): void {
     const id = parseInt(this.route.snapshot.paramMap.get('id')!, 10);
     this.users$.subscribe((users) => {
-      this.user = users.find((user) => user.id == id);
+      this.users = users;
+      this.user = this.updatedUser = users.find((user) => user.id == id);
       this.user && this._database.initialize(this.user?.permissions);
       this.checklistSelection = new SelectionModel<PermissionItemFlatNode>(
         true,
@@ -147,8 +157,29 @@ export class UserSetupComponent implements OnInit {
     });
   }
 
-  goBack(): void {
+  saveAndGoBack(): void {
+    if (this.updatedUser) {
+      this.store.dispatch(
+        SharedUsersActions.updateUser({ user: this.updatedUser })
+      );
+    }
     this.location.back();
+  }
+
+  // Patch new user object with values from checkboxes
+  patchCheckboxes(patchParent: string, patchChild: PatchPermissionEntry): void {
+    if (this.updatedUser) {
+      this.updatedUser = {
+        ...this.updatedUser,
+        permissions: {
+          ...this.updatedUser.permissions,
+          [patchParent]: {
+            ...this.updatedUser.permissions[patchParent],
+            [patchChild.name]: patchChild.value,
+          },
+        },
+      };
+    }
   }
 
   getLevel = (node: PermissionItemFlatNode) => node.level;
@@ -211,6 +242,15 @@ export class UserSetupComponent implements OnInit {
     descendants.forEach((child) => {
       this.checklistSelection.isSelected(child);
       child.isChecked = this.checklistSelection.isSelected(child);
+
+      if (this.updatedUser && node.expandable) {
+        const patchParent = [node.item].toString();
+        const patchChild: PatchPermissionEntry = {
+          name: child.item,
+          value: child.isChecked,
+        };
+        this.patchCheckboxes(patchParent, patchChild);
+      }
     });
     this.checkAllParentsSelection(node);
   }
@@ -220,6 +260,15 @@ export class UserSetupComponent implements OnInit {
     this.checklistSelection.toggle(node);
     this.checkAllParentsSelection(node);
     node.isChecked = this.checklistSelection.isSelected(node);
+
+    if (this.updatedUser && !node.expandable && this.getParentNode(node)) {
+      const patchParent = [this.getParentNode(node)?.item].toString();
+      const patchChild: PatchPermissionEntry = {
+        name: node.item,
+        value: node.isChecked,
+      };
+      this.patchCheckboxes(patchParent, patchChild);
+    }
   }
 
   /* Checks all the parents when a leaf node is selected/unselected */

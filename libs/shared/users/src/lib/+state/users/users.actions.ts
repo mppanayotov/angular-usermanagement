@@ -22,3 +22,8 @@ export const addUser = createAction(
   '[SharedUsers] Add User',
   props<{ user: SharedUsersEntity }>()
 );
+
+export const updateUser = createAction(
+  '[SharedUsers] Update User',
+  props<{ user: SharedUsersEntity }>()
+);

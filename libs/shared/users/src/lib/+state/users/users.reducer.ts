@@ -45,6 +45,9 @@ const reducer = createReducer(
   }),
   on(SharedUsersActions.addUser, (state, { user }) => {
     return usersAdapter.addOne(user, state);
+  }),
+  on(SharedUsersActions.updateUser, (state, { user }) => {
+    return usersAdapter.setOne(user, state);
   })
 );
 

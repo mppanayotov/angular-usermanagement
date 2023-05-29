@@ -1,4 +1,4 @@
-<div class="user-setup" *ngIf="user">
+<div class="user-setup" *ngIf="updatedUser">
   <div
     class="mat-elevation-z8"
     style="position: relative; background-color: #fff"
@@ -14,55 +14,85 @@
   </div>
   <div class="user-setup__body">
     <div class="shell">
-      <ul>
-        <li *ngFor="let item of user | keyvalue">
-          <b>{{ item.key }}:</b> {{ item.value }}
-        </li>
-      </ul>
-      <mat-tree
-        [dataSource]="dataSource"
-        [treeControl]="treeControl"
-        class="user-setup__tree"
-      >
-        <mat-tree-node
-          *matTreeNodeDef="let node"
-          matTreeNodeToggle
-          matTreeNodePadding
-        >
+      <div class="user-setup__row">
+        <div class="user-setup__col">
+          <ul>
+            <ng-container *ngFor="let item of updatedUser | keyvalue">
+              <li *ngIf="item.key !== 'permissions'">
+                <b>{{ item.key }}:</b> {{ item.value }}
+              </li>
+            </ng-container>
+            <ng-container
+              *ngFor="let item of updatedUser.permissions | keyvalue"
+            >
+              <li>
+                <b>{{ item.key }}:</b>
+                <ng-container
+                  *ngFor="
+                    let subitem of updatedUser.permissions[item.key] | keyvalue
+                  "
+                >
+                  <li>
+                    <b>{{ subitem.key }}:</b> {{ subitem.value }}
+                  </li>
+                </ng-container>
+              </li>
+            </ng-container>
+          </ul>
+        </div>
+        <div class="user-setup__col">
           <button mat-icon-button disabled></button>
-          <mat-checkbox
-            color="primary"
-            class="checklist-leaf-node"
-            [checked]="checklistSelection.isSelected(node)"
-            (change)="permissionLeafItemSelectionToggle(node)"
-            >{{ node.item }}</mat-checkbox
+          <mat-checkbox color="primary" [(ngModel)]="updatedUser.superadmin"
+            >superadmin</mat-checkbox
           >
-        </mat-tree-node>
-        <mat-tree-node
-          *matTreeNodeDef="let node; when: hasChild"
-          matTreeNodePadding
-        >
-          <button
-            mat-icon-button
-            matTreeNodeToggle
-            [attr.aria-label]="'Toggle ' + node.item"
+          <mat-tree
+            [dataSource]="dataSource"
+            [treeControl]="treeControl"
+            class="user-setup__tree"
           >
-            <mat-icon class="mat-icon-rtl-mirror">
-              {{
-                treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'
-              }}
-            </mat-icon>
-          </button>
-          <mat-checkbox
-            color="primary"
-            [checked]="descendantsAllSelected(node)"
-            [indeterminate]="descendantsPartiallySelected(node)"
-            (change)="permissionItemSelectionToggle(node)"
-            >{{ node.item }}</mat-checkbox
-          >
-        </mat-tree-node>
-      </mat-tree>
-      <button mat-fab extended color="primary" (click)="goBack()">
+            <mat-tree-node
+              *matTreeNodeDef="let node"
+              matTreeNodeToggle
+              matTreeNodePadding
+            >
+              <button mat-icon-button disabled></button>
+              <mat-checkbox
+                color="primary"
+                class="checklist-leaf-node"
+                [checked]="checklistSelection.isSelected(node)"
+                (change)="permissionLeafItemSelectionToggle(node)"
+                >{{ node.item }}</mat-checkbox
+              >
+            </mat-tree-node>
+            <mat-tree-node
+              *matTreeNodeDef="let node; when: hasChild"
+              matTreeNodePadding
+            >
+              <button
+                mat-icon-button
+                matTreeNodeToggle
+                [attr.aria-label]="'Toggle ' + node.item"
+              >
+                <mat-icon class="mat-icon-rtl-mirror">
+                  {{
+                    treeControl.isExpanded(node)
+                      ? 'expand_more'
+                      : 'chevron_right'
+                  }}
+                </mat-icon>
+              </button>
+              <mat-checkbox
+                color="primary"
+                [checked]="descendantsAllSelected(node)"
+                [indeterminate]="descendantsPartiallySelected(node)"
+                (change)="permissionItemSelectionToggle(node)"
+                >{{ node.item }}</mat-checkbox
+              >
+            </mat-tree-node>
+          </mat-tree>
+        </div>
+      </div>
+      <button mat-fab extended color="primary" (click)="saveAndGoBack()">
         Save Changes
       </button>
     </div>

@@ -20,6 +20,7 @@ export class UserListComponent implements AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   users$ = this.store.select(selectAllUsers);
+  users: SharedUsersEntity[] = [];
   dataSource: MatTableDataSource<SharedUsersEntity> = new MatTableDataSource();
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
@@ -29,7 +30,8 @@ export class UserListComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.users$.subscribe((users) => {
-      this.dataSource = new MatTableDataSource(users);
+      this.users = users;
+      this.dataSource = new MatTableDataSource(this.users);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     });
@@ -51,6 +53,7 @@ export class UserListComponent implements AfterViewInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       console.table('Add dialog was closed. Add result:', result ?? 'cancel');
+      result && this.onAdd(result);
     });
   }
 
@@ -68,9 +71,45 @@ export class UserListComponent implements AfterViewInit {
     });
   }
 
-  // onAdd(userId: string) {
-  //   this.store.dispatch(SharedUsersActions.addUser({ userId }));
-  // }
+  onAdd(addDialogResult: SharedUsersEntity) {
+    const newUser: SharedUsersEntity = {
+      ...addDialogResult,
+      id: this.genId(),
+      status: 'active',
+      superadmin: true,
+      permissions: {
+        'Permission group 1': {
+          'Permission 11': true,
+          'Permission 12': false,
+          'Permission 13': false,
+          'Permission 14': false,
+          'Permission 15': false,
+        },
+        'Permission group 2': {
+          'Permission 21': true,
+          'Permission 22': true,
+          'Permission 23': true,
+          'Permission 24': true,
+          'Permission 25': true,
+        },
+        'Permission group 3': {
+          'Permission 31': false,
+          'Permission 32': false,
+          'Permission 33': false,
+          'Permission 34': false,
+          'Permission 35': false,
+        },
+      },
+    };
+
+    this.store.dispatch(SharedUsersActions.addUser({ user: newUser }));
+  }
+
+  genId(): number {
+    return this.users.length > 0
+      ? Math.max(...this.users.map((user) => user.id)) + 1
+      : 1;
+  }
 
   onRemove(userId: string) {
     this.store.dispatch(SharedUsersActions.removeUser({ userId }));

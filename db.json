@@ -7,8 +7,8 @@
       "role": "admin",
       "status": "active",
       "email": "email1@server.com",
+      "superadmin": true,
       "permissions": {
-        "superadmin": true,
         "Permission group 1": {
           "Permission 11": true,
           "Permission 12": false,
@@ -39,8 +39,8 @@
       "role": "admin",
       "status": "disabled",
       "email": "email2@server.com",
+      "superadmin": false,
       "permissions": {
-        "superadmin": false,
         "Permission group 1": {
           "Permission 11": false,
           "Permission 12": false,
@@ -71,8 +71,8 @@
       "role": "user",
       "status": "active",
       "email": "email3@server.com",
+      "superadmin": false,
       "permissions": {
-        "superadmin": false,
         "Permission group 1": {
           "Permission 11": false,
           "Permission 12": false,
@@ -103,8 +103,8 @@
       "role": "user",
       "status": "disabled",
       "email": "email4@server.com",
+      "superadmin": false,
       "permissions": {
-        "superadmin": false,
         "Permission group 1": {
           "Permission 11": false,
           "Permission 12": false,
@@ -135,8 +135,8 @@
       "role": "user",
       "status": "active",
       "email": "email5@server.com",
+      "superadmin": false,
       "permissions": {
-        "superadmin": false,
         "Permission group 1": {
           "Permission 11": false,
           "Permission 12": false,
@@ -167,8 +167,8 @@
       "role": "user",
       "status": "active",
       "email": "email6@server.com",
+      "superadmin": false,
       "permissions": {
-        "superadmin": false,
         "Permission group 1": {
           "Permission 11": false,
           "Permission 12": false,
@@ -199,8 +199,8 @@
       "role": "user",
       "status": "active",
       "email": "email7@server.com",
+      "superadmin": false,
       "permissions": {
-        "superadmin": false,
         "Permission group 1": {
           "Permission 11": false,
           "Permission 12": false,
@@ -231,8 +231,8 @@
       "role": "user",
       "status": "active",
       "email": "email8@server.com",
+      "superadmin": false,
       "permissions": {
-        "superadmin": false,
         "Permission group 1": {
           "Permission 11": false,
           "Permission 12": false,

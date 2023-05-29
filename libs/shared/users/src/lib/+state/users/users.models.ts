@@ -8,12 +8,10 @@ export interface SharedUsersEntity {
   role: string;
   status: string;
   email: string;
+  superadmin: boolean;
   permissions: {
-    superadmin: boolean;
-    permissionGroupName: string;
-    permissionGroupPermissions: {
-      permission: string;
-      value: boolean;
+    [permissionGroupName: string]: {
+      [permission: string]: boolean;
     };
   };
 }
