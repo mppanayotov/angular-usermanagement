@@ -1,4 +1,4 @@
-<div class="user-setup" *ngIf="updatedUser">
+<div class="user-setup" *ngIf="user && updatedUser">
   <div
     class="mat-elevation-z8"
     style="position: relative; background-color: #fff"
@@ -15,35 +15,120 @@
   <div class="user-setup__body">
     <div class="shell">
       <div class="user-setup__row">
-        <div class="user-setup__col">
-          <ul>
-            <ng-container *ngFor="let item of updatedUser | keyvalue">
-              <li *ngIf="item.key !== 'permissions'">
-                <b>{{ item.key }}:</b> {{ item.value }}
-              </li>
-            </ng-container>
-            <ng-container
-              *ngFor="let item of updatedUser.permissions | keyvalue"
-            >
-              <li>
-                <b>{{ item.key }}:</b>
-                <ng-container
-                  *ngFor="
-                    let subitem of updatedUser.permissions[item.key] | keyvalue
-                  "
-                >
-                  <li>
-                    <b>{{ subitem.key }}:</b> {{ subitem.value }}
-                  </li>
-                </ng-container>
-              </li>
-            </ng-container>
-          </ul>
+        <div class="user-setup__col" style="text-align: center">
+          <div class="user-setup__avatar">
+            <mat-icon
+              >account_circle<mat-chip
+                matChipAvatar
+                *ngIf="updatedUser.role === 'admin'"
+                highlighted
+                class="user-setup__admin-chip"
+                ><mat-icon>vpn_key</mat-icon></mat-chip
+              >
+            </mat-icon>
+          </div>
+
+          <h2>{{ user.firstName | titlecase }}</h2>
+          <h2>{{ user.lastName | titlecase }}</h2>
+
+          <p>{{ user.email }}</p>
+
+          <button mat-fab extended color="primary">Resend Invite</button>
         </div>
         <div class="user-setup__col">
+          <mat-slide-toggle
+            [color]="'primary'"
+            [checked]="updatedUser.status === 'active'"
+            (change)="onStatusChange($event)"
+            >The user is
+            <strong>{{
+              updatedUser.status | titlecase
+            }}</strong></mat-slide-toggle
+          >
+          <form
+            [formGroup]="form"
+            [ngStyle]="{
+              opacity: updatedUser.status === 'disabled' ? 0.5 : 1,
+              'pointer-events':
+                updatedUser.status === 'disabled' ? 'none' : 'auto'
+            }"
+          >
+            <mat-form-field class="dialog-add-user__field">
+              <mat-label>First Name</mat-label>
+              <input
+                matInput
+                placeholder="First Name"
+                formControlName="firstName"
+                required
+              />
+              <mat-error *ngIf="form.controls.firstName.invalid">{{
+                getErrorMessage(form.controls.firstName)
+              }}</mat-error>
+            </mat-form-field>
+            <mat-form-field class="dialog-add-user__field">
+              <mat-label>Last Name</mat-label>
+              <input
+                matInput
+                placeholder="Last Name"
+                formControlName="lastName"
+                required
+              />
+              <mat-error *ngIf="form.controls.lastName.invalid">{{
+                getErrorMessage(form.controls.lastName)
+              }}</mat-error>
+            </mat-form-field>
+            <mat-form-field class="dialog-add-user__field">
+              <mat-label>Email</mat-label>
+              <input
+                matInput
+                placeholder="Email"
+                formControlName="email"
+                required
+              />
+              <mat-error *ngIf="form.controls.email.invalid">{{
+                getErrorMessage(form.controls.email)
+              }}</mat-error>
+            </mat-form-field>
+            <mat-form-field class="dialog-add-user__field">
+              <mat-label>Role</mat-label>
+              <mat-select formControlName="role" required>
+                <mat-option>--</mat-option>
+                <mat-option *ngFor="let role of roles" [value]="role">
+                  {{ role }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="form.controls.role.invalid">{{
+                getErrorMessage(form.controls.role)
+              }}</mat-error>
+            </mat-form-field>
+          </form>
+          <div>
+            <button
+              mat-fab
+              extended
+              color="primary"
+              (click)="saveAndGoBack()"
+              type="submit"
+              [disabled]="form.invalid"
+            >
+              Save Changes
+            </button>
+          </div>
+        </div>
+        <div
+          class="user-setup__col"
+          [ngStyle]="{
+            opacity: updatedUser.status === 'disabled' ? 0.5 : 1,
+            'pointer-events':
+              updatedUser.status === 'disabled' ? 'none' : 'auto'
+          }"
+        >
           <button mat-icon-button disabled></button>
-          <mat-checkbox color="primary" [(ngModel)]="updatedUser.superadmin"
-            >superadmin</mat-checkbox
+          <mat-checkbox
+            color="primary"
+            [checked]="updatedUser.superadmin"
+            (change)="onSuperadminChange($event)"
+            >Superadmin</mat-checkbox
           >
           <mat-tree
             [dataSource]="dataSource"
@@ -92,9 +177,6 @@
           </mat-tree>
         </div>
       </div>
-      <button mat-fab extended color="primary" (click)="saveAndGoBack()">
-        Save Changes
-      </button>
     </div>
   </div>
 </div>

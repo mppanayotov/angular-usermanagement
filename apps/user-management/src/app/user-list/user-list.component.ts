@@ -9,6 +9,7 @@ import { Store } from '@ngrx/store';
 import { SharedUsersEntity } from '@angular-usermanagement/shared/users';
 import { selectAllUsers } from '@angular-usermanagement/shared/users';
 import * as SharedUsersActions from '@angular-usermanagement/shared/users';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'angular-usermanagement-user-list',
@@ -24,7 +25,7 @@ export class UserListComponent implements AfterViewInit {
   dataSource: MatTableDataSource<SharedUsersEntity> = new MatTableDataSource();
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns: string[] = ['id', 'name', 'role', 'status', 'actions'];
+  displayedColumns: string[] = ['user', 'role', 'status', 'actions'];
 
   constructor(private store: Store, public dialog: MatDialog) {}
 
@@ -69,6 +70,15 @@ export class UserListComponent implements AfterViewInit {
       );
       this.onRemove(result?.id);
     });
+  }
+
+  onStatusChange(row: SharedUsersEntity, $event: MatSlideToggleChange) {
+    const updatedUser: SharedUsersEntity = {
+      ...row,
+      status: $event.checked ? 'active' : 'disabled',
+    };
+
+    this.store.dispatch(SharedUsersActions.updateUser({ user: updatedUser }));
   }
 
   onAdd(addDialogResult: SharedUsersEntity) {

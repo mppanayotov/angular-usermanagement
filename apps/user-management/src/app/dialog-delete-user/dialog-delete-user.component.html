@@ -1,13 +1,15 @@
 <div class="dialog-delete-user">
   <h1 mat-dialog-title>Delete User</h1>
   <div mat-dialog-content>
-    {{ data.name }}
-
-    <ul>
-      <li *ngFor="let item of data | keyvalue">
-        <b>{{ item.key }}:</b> {{ item.value }}
-      </li>
-    </ul>
+    <div class="dialog-delete-user__row">
+      <div class="dialog-delete-user__col">
+        {{ data.firstName }}
+        {{ data.lastName }}
+      </div>
+      <div class="dialog-delete-user__col">
+        <strong>{{ data.status | titlecase }} User</strong>
+      </div>
+    </div>
   </div>
   <div mat-dialog-actions class="dialog-delete-user__actions">
     <button mat-button (click)="dialogRef.close()">Cancel</button>

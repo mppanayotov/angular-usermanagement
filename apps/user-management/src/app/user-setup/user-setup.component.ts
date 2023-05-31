@@ -1,4 +1,5 @@
 import { Component, OnInit, Injectable } from '@angular/core';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { SelectionModel } from '@angular/cdk/collections';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import {
@@ -12,6 +13,8 @@ import { SharedUsersEntity } from '@angular-usermanagement/shared/users';
 import { selectAllUsers } from '@angular-usermanagement/shared/users';
 import * as SharedUsersActions from '@angular-usermanagement/shared/users';
 import { BehaviorSubject } from 'rxjs';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 /**
  * Node for permission item
@@ -114,11 +117,21 @@ export class UserSetupComponent implements OnInit {
     true /* multiple */
   );
 
+  form = this.formBuilder.group({
+    firstName: [this.updatedUser?.firstName, Validators.required],
+    lastName: [this.updatedUser?.lastName, Validators.required],
+    email: [this.updatedUser?.email, [Validators.required, Validators.email]],
+    role: [this.updatedUser?.role, Validators.required],
+  });
+
+  roles = ['user', 'admin'];
+
   constructor(
     private route: ActivatedRoute,
     private location: Location,
     private store: Store,
-    private _database: ChecklistDatabase
+    private _database: ChecklistDatabase,
+    private formBuilder: FormBuilder
   ) {
     this.treeFlattener = new MatTreeFlattener(
       this.transformer,
@@ -150,6 +163,15 @@ export class UserSetupComponent implements OnInit {
       this.users = users;
       this.user = this.updatedUser = users.find((user) => user.id == id);
       this.user && this._database.initialize(this.user?.permissions);
+      this.form = this.formBuilder.group({
+        firstName: [this.updatedUser?.firstName, Validators.required],
+        lastName: [this.updatedUser?.lastName, Validators.required],
+        email: [
+          this.updatedUser?.email,
+          [Validators.required, Validators.email],
+        ],
+        role: [this.updatedUser?.role, Validators.required],
+      });
       this.checklistSelection = new SelectionModel<PermissionItemFlatNode>(
         true,
         this.treeControl.dataNodes.filter((node) => node.isChecked)
@@ -157,13 +179,64 @@ export class UserSetupComponent implements OnInit {
     });
   }
 
+  // Update store values with new
   saveAndGoBack(): void {
-    if (this.updatedUser) {
+    if (
+      this.updatedUser &&
+      this.form.value.firstName &&
+      this.form.value.lastName &&
+      this.form.value.email &&
+      this.form.value.role
+    ) {
+      this.updatedUser = {
+        ...this.updatedUser,
+        firstName: this.form.value.firstName,
+        lastName: this.form.value.lastName,
+        email: this.form.value.email,
+        role: this.form.value.role,
+      };
+
       this.store.dispatch(
         SharedUsersActions.updateUser({ user: this.updatedUser })
       );
     }
     this.location.back();
+  }
+
+  // Patch new user object with values from slide toggles
+  onStatusChange($event: MatSlideToggleChange) {
+    if (this.updatedUser) {
+      this.updatedUser = {
+        ...this.updatedUser,
+        status: $event.checked ? 'active' : 'disabled',
+      };
+    }
+  }
+
+  // Patch new user object with values from slide toggles
+  onSuperadminChange($event: MatCheckboxChange) {
+    if (this.updatedUser) {
+      this.updatedUser = {
+        ...this.updatedUser,
+        superadmin: $event.checked,
+      };
+    }
+  }
+
+  getErrorMessage(field: FormControl) {
+    if (field == this.form.controls.email) {
+      if (this.form.controls.email.hasError('required')) {
+        return 'You must enter a value';
+      }
+
+      return this.form.controls.email.hasError('email') && 'Not a valid email';
+    }
+
+    if (field.hasError('required')) {
+      return 'You must enter a value';
+    }
+
+    return '';
   }
 
   // Patch new user object with values from checkboxes

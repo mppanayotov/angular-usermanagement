@@ -11,7 +11,8 @@
 @import 'assets/scss/components/shell';
 
 // User list overrides
-.user-list {
+.user-list,
+.user-setup {
   .user-list__head .mdc-floating-label {
     cursor: text;
   }

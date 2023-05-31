@@ -34,4 +34,35 @@
     max-height: 100%;
     padding: 0 10px;
   }
+  .user-setup__col:nth-child(2) > div {
+    padding-top: 20px;
+  }
+  .user-setup__body button[mat-fab] {
+    min-width: 209px;
+  }
+  .user-setup__admin-chip {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+  }
+  .user-setup__admin-chip:not(.mat-mdc-chip-highlighted) {
+    background: none;
+  }
+  .user-setup__avatar {
+    position: relative;
+  }
+  .user-setup__avatar > mat-icon {
+    position: relative;
+    display: block;
+    width: 232px;
+    height: 232px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #666;
+    font-size: 232px;
+  }
+  mat-form-field {
+    display: block;
+    margin-left: 36px;
+  }
 }

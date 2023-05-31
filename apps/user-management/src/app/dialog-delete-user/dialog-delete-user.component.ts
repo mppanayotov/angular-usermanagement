@@ -1,10 +1,6 @@
 import { Component, Inject } from '@angular/core';
+import { SharedUsersEntity } from '@angular-usermanagement/shared/users';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-
-export interface DialogData {
-  name: string;
-  id: number;
-}
 
 @Component({
   selector: 'angular-usermanagement-dialog-delete-user',
@@ -14,6 +10,6 @@ export interface DialogData {
 export class DialogDeleteUserComponent {
   constructor(
     public dialogRef: MatDialogRef<DialogDeleteUserComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    @Inject(MAT_DIALOG_DATA) public data: SharedUsersEntity
   ) {}
 }

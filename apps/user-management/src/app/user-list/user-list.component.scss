@@ -7,6 +7,11 @@
   table {
     width: 100%;
     background: none;
+    margin-left: 68px;
+  }
+  table td {
+    padding-top: 20px;
+    padding-bottom: 20px;
   }
   .user-list__search {
     position: absolute;
@@ -46,5 +51,25 @@
   }
   .user-list__no-data {
     height: 52px;
+  }
+  .user-list__user {
+    position: relative;
+    overflow: visible;
+  }
+  .user-list__avatar {
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    margin-right: 20px;
+    transform: translateY(-50%);
+  }
+  .user-list__avatar mat-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 48px;
+    color: #666;
+  }
+  .user__email {
+    font-weight: 200;
   }
 }

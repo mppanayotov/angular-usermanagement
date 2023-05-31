@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "nx run-many -t serve"
+    "start": "nx run-many -t serve --parallel=3"
   },
   "private": true,
   "dependencies": {
