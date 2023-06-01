@@ -19,7 +19,7 @@ export interface SharedUsersEntity {
 /**
  * Class for the 'SharedUsers' data
  */
-class newUserTemplate {
+export class newUserTemplate implements SharedUsersEntity {
   id = 0;
   firstName = '';
   lastName = '';
@@ -51,7 +51,19 @@ class newUserTemplate {
     },
   };
 
-  constructor(id: number) {
+  constructor(
+    id: number,
+    inputData: {
+      firstName: string;
+      lastName: string;
+      role: string;
+      email: string;
+    }
+  ) {
     this.id = id;
+    this.firstName = inputData.firstName;
+    this.lastName = inputData.lastName;
+    this.role = inputData.role;
+    this.email = inputData.email;
   }
 }

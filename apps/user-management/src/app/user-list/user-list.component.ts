@@ -6,7 +6,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogAddUserComponent } from '../dialog-add-user/dialog-add-user.component';
 import { DialogDeleteUserComponent } from '../dialog-delete-user/dialog-delete-user.component';
 import { Store } from '@ngrx/store';
-import { SharedUsersEntity } from '@angular-usermanagement/shared/users';
+import {
+  SharedUsersEntity,
+  newUserTemplate,
+} from '@angular-usermanagement/shared/users';
 import { selectAllUsers } from '@angular-usermanagement/shared/users';
 import * as SharedUsersActions from '@angular-usermanagement/shared/users';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
@@ -33,6 +36,16 @@ export class UserListComponent implements AfterViewInit {
     this.users$.subscribe((users) => {
       this.users = users;
       this.dataSource = new MatTableDataSource(this.users);
+      this.dataSource.sortingDataAccessor = (user, property) => {
+        switch (property) {
+          case 'user':
+            return user.firstName;
+          case 'role':
+            return user.role;
+          default:
+            return user.status;
+        }
+      };
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     });
@@ -82,36 +95,7 @@ export class UserListComponent implements AfterViewInit {
   }
 
   onAdd(addDialogResult: SharedUsersEntity) {
-    const newUser: SharedUsersEntity = {
-      ...addDialogResult,
-      id: this.genId(),
-      status: 'active',
-      superadmin: true,
-      permissions: {
-        'Permission group 1': {
-          'Permission 11': true,
-          'Permission 12': false,
-          'Permission 13': false,
-          'Permission 14': false,
-          'Permission 15': false,
-        },
-        'Permission group 2': {
-          'Permission 21': true,
-          'Permission 22': true,
-          'Permission 23': true,
-          'Permission 24': true,
-          'Permission 25': true,
-        },
-        'Permission group 3': {
-          'Permission 31': false,
-          'Permission 32': false,
-          'Permission 33': false,
-          'Permission 34': false,
-          'Permission 35': false,
-        },
-      },
-    };
-
+    const newUser = new newUserTemplate(this.genId(), addDialogResult);
     this.store.dispatch(SharedUsersActions.addUser({ user: newUser }));
   }
 
