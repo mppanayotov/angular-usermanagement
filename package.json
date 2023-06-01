@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "nx run-many -t serve --parallel=3"
+    "start": "nx run-many -t serve --parallel=3",
+    "dep-graph": "nx dep-graph"
   },
   "private": true,
   "dependencies": {

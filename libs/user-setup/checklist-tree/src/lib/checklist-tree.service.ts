@@ -1,71 +1,28 @@
 import { Injectable } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import {
-  MatTreeFlatDataSource,
-  MatTreeFlattener,
-} from '@angular/material/tree';
-import { UserSetupChecklistDatabaseService } from '@angular-usermanagement/user-setup/checklist-database';
+import { MatTreeFlattener } from '@angular/material/tree';
 import { SelectionModel } from '@angular/cdk/collections';
 import { SharedUsersEntity } from '@angular-usermanagement/shared/users';
+import {
+  PermissionItemNode,
+  PermissionItemFlatNode,
+  PermissionEntry,
+} from '@angular-usermanagement/user-setup/checklist-models';
 
-/**
- * Node for permission item
- */
-class PermissionItemNode {
-  children: PermissionItemNode[] = [];
-  item = '';
-  isChecked?: boolean;
-}
-
-/** Flat permission item node with expandable and level information */
-class PermissionItemFlatNode {
-  item = '';
-  level = 0;
-  expandable = false;
-  isChecked?: boolean;
-}
-
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class UserSetupChecklistTreeService {
-  /** Map from flat node to nested node. This helps us finding the nested node to be modified */
-  flatNodeMap = new Map<PermissionItemFlatNode, PermissionItemNode>();
+  updatedUser?: SharedUsersEntity;
 
   /** Map from nested node to flattened node. This helps us to keep the same object for selection */
   nestedNodeMap = new Map<PermissionItemNode, PermissionItemFlatNode>();
 
-  /** A selected parent node to be inserted */
-  selectedParent: PermissionItemFlatNode | null = null;
-
-  /** The new item's name */
-  treeControl: FlatTreeControl<PermissionItemFlatNode>;
-  treeFlattener: MatTreeFlattener<PermissionItemNode, PermissionItemFlatNode>;
-  dataSource: MatTreeFlatDataSource<PermissionItemNode, PermissionItemFlatNode>;
+  /** Map from flat node to nested node. This helps us finding the nested node to be modified */
+  flatNodeMap = new Map<PermissionItemFlatNode, PermissionItemNode>();
 
   /** The selection for checklist */
-  checklistSelection = new SelectionModel<PermissionItemFlatNode>(
-    true /* multiple */
-  );
-
-  constructor(private _database: UserSetupChecklistDatabaseService) {
-    this.treeFlattener = new MatTreeFlattener(
-      this.transformer,
-      this.getLevel,
-      this.isExpandable,
-      this.getChildren
-    );
-    this.treeControl = new FlatTreeControl<PermissionItemFlatNode>(
-      this.getLevel,
-      this.isExpandable
-    );
-    this.dataSource = new MatTreeFlatDataSource(
-      this.treeControl,
-      this.treeFlattener
-    );
-
-    _database.dataChange.subscribe((data) => {
-      this.dataSource.data = data;
-    });
-  }
+  checklistSelection = new SelectionModel<PermissionItemFlatNode>(true);
 
   getLevel = (node: PermissionItemFlatNode) => node.level;
   isExpandable = (node: PermissionItemFlatNode) => node.expandable;
@@ -73,8 +30,35 @@ export class UserSetupChecklistTreeService {
     node.children;
   hasChild = (_: number, _nodeData: PermissionItemFlatNode) =>
     _nodeData.expandable;
-  hasNoContent = (_: number, _nodeData: PermissionItemFlatNode) =>
-    _nodeData.item === '';
+
+  /* Checks all the parents when a leaf node is selected/unselected */
+  checkAllParentsSelection(node: PermissionItemFlatNode): void {
+    let parent: PermissionItemFlatNode | null = this.getParentNode(node);
+    while (parent) {
+      this.checkRootNodeSelection(parent);
+      parent = this.getParentNode(parent);
+    }
+  }
+
+  /* Get the parent node of a node */
+  getParentNode(node: PermissionItemFlatNode): PermissionItemFlatNode | null {
+    const currentLevel = this.getLevel(node);
+
+    if (currentLevel < 1) {
+      return null;
+    }
+
+    const startIndex = this.treeControl.dataNodes.indexOf(node) - 1;
+
+    for (let i = startIndex; i >= 0; i--) {
+      const currentNode = this.treeControl.dataNodes[i];
+
+      if (this.getLevel(currentNode) < currentLevel) {
+        return currentNode;
+      }
+    }
+    return null;
+  }
 
   /**
    * Transformer to convert nested node to flat node. Record the nodes in maps for later use.
@@ -93,6 +77,20 @@ export class UserSetupChecklistTreeService {
     this.nestedNodeMap.set(node, flatNode);
     return flatNode;
   };
+
+  /** The new item's name */
+  treeFlattener: MatTreeFlattener<PermissionItemNode, PermissionItemFlatNode> =
+    new MatTreeFlattener(
+      this.transformer,
+      this.getLevel,
+      this.isExpandable,
+      this.getChildren
+    );
+
+  treeControl = new FlatTreeControl<PermissionItemFlatNode>(
+    this.getLevel,
+    this.isExpandable
+  );
 
   /** Whether all the descendants of the node are selected. */
   descendantsAllSelected(node: PermissionItemFlatNode): boolean {
@@ -115,11 +113,40 @@ export class UserSetupChecklistTreeService {
     return result && !this.descendantsAllSelected(node);
   }
 
+  /** Check root node checked state and change it accordingly */
+  checkRootNodeSelection(node: PermissionItemFlatNode): void {
+    const nodeSelected = this.checklistSelection.isSelected(node);
+    const descendants = this.treeControl.getDescendants(node);
+    const descAllSelected =
+      descendants.length > 0 &&
+      descendants.every((child) => {
+        return this.checklistSelection.isSelected(child);
+      });
+    if (nodeSelected && !descAllSelected) {
+      this.checklistSelection.deselect(node);
+    } else if (!nodeSelected && descAllSelected) {
+      this.checklistSelection.select(node);
+    }
+  }
+
+  // Patch new user object with values from checkboxes
+  patchCheckboxes(patchParent: string, patchChild: PermissionEntry): void {
+    if (this.updatedUser) {
+      this.updatedUser = {
+        ...this.updatedUser,
+        permissions: {
+          ...this.updatedUser.permissions,
+          [patchParent]: {
+            ...this.updatedUser.permissions[patchParent],
+            [patchChild.name]: patchChild.value,
+          },
+        },
+      };
+    }
+  }
+
   /** Toggle the permission item selection. Select/deselect all the descendants node */
-  permissionItemSelectionToggle(
-    node: PermissionItemFlatNode,
-    updatedUser: SharedUsersEntity
-  ): void {
+  permissionItemSelectionToggle(node: PermissionItemFlatNode): void {
     this.checklistSelection.toggle(node);
     const descendants = this.treeControl.getDescendants(node);
     this.checklistSelection.isSelected(node)
@@ -131,9 +158,9 @@ export class UserSetupChecklistTreeService {
       this.checklistSelection.isSelected(child);
       child.isChecked = this.checklistSelection.isSelected(child);
 
-      if (updatedUser && node.expandable) {
+      if (this.updatedUser && node.expandable) {
         const patchParent = [node.item].toString();
-        const patchChild: PatchPermissionEntry = {
+        const patchChild: PermissionEntry = {
           name: child.item,
           value: child.isChecked,
         };
@@ -151,56 +178,11 @@ export class UserSetupChecklistTreeService {
 
     if (this.updatedUser && !node.expandable && this.getParentNode(node)) {
       const patchParent = [this.getParentNode(node)?.item].toString();
-      const patchChild: PatchPermissionEntry = {
+      const patchChild: PermissionEntry = {
         name: node.item,
         value: node.isChecked,
       };
       this.patchCheckboxes(patchParent, patchChild);
     }
-  }
-
-  /* Checks all the parents when a leaf node is selected/unselected */
-  checkAllParentsSelection(node: PermissionItemFlatNode): void {
-    let parent: PermissionItemFlatNode | null = this.getParentNode(node);
-    while (parent) {
-      this.checkRootNodeSelection(parent);
-      parent = this.getParentNode(parent);
-    }
-  }
-
-  /** Check root node checked state and change it accordingly */
-  checkRootNodeSelection(node: PermissionItemFlatNode): void {
-    const nodeSelected = this.checklistSelection.isSelected(node);
-    const descendants = this.treeControl.getDescendants(node);
-    const descAllSelected =
-      descendants.length > 0 &&
-      descendants.every((child) => {
-        return this.checklistSelection.isSelected(child);
-      });
-    if (nodeSelected && !descAllSelected) {
-      this.checklistSelection.deselect(node);
-    } else if (!nodeSelected && descAllSelected) {
-      this.checklistSelection.select(node);
-    }
-  }
-
-  /* Get the parent node of a node */
-  getParentNode(node: PermissionItemFlatNode): PermissionItemFlatNode | null {
-    const currentLevel = this.getLevel(node);
-
-    if (currentLevel < 1) {
-      return null;
-    }
-
-    const startIndex = this.treeControl.dataNodes.indexOf(node) - 1;
-
-    for (let i = startIndex; i >= 0; i--) {
-      const currentNode = this.treeControl.dataNodes[i];
-
-      if (this.getLevel(currentNode) < currentLevel) {
-        return currentNode;
-      }
-    }
-    return null;
   }
 }

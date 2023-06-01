@@ -1,22 +1,16 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { SharedUsersEntity } from '@angular-usermanagement/shared/users';
-
-/**
- * Node for permission item
- */
-class PermissionItemNode {
-  children: PermissionItemNode[] = [];
-  item = '';
-  isChecked?: boolean;
-}
+import { PermissionItemNode } from '@angular-usermanagement/user-setup/checklist-models';
 
 /**
  * Checklist database, it can build a tree structured Json object.
  * Each node in Json object represents a permission item or a category.
  * If a node is a category, it has children items and new items can be added under the category.
  */
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class UserSetupChecklistDatabaseService {
   dataChange = new BehaviorSubject<PermissionItemNode[]>([]);
 

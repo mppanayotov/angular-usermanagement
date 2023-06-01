@@ -1,4 +1,4 @@
-<div class="user-setup" *ngIf="user && updatedUser">
+<div class="user-setup" *ngIf="user">
   <div
     class="mat-elevation-z8"
     style="position: relative; background-color: #fff"
@@ -20,7 +20,7 @@
             <mat-icon
               >account_circle<mat-chip
                 matChipAvatar
-                *ngIf="updatedUser.role === 'admin'"
+                *ngIf="user.role === 'admin'"
                 highlighted
                 class="user-setup__admin-chip"
                 ><mat-icon>vpn_key</mat-icon></mat-chip
@@ -38,19 +38,16 @@
         <div class="user-setup__col">
           <mat-slide-toggle
             [color]="'primary'"
-            [checked]="updatedUser.status === 'active'"
+            [checked]="user.status === 'active'"
             (change)="onStatusChange($event)"
             >The user is
-            <strong>{{
-              updatedUser.status | titlecase
-            }}</strong></mat-slide-toggle
+            <strong>{{ user.status | titlecase }}</strong></mat-slide-toggle
           >
           <form
             [formGroup]="form"
             [ngStyle]="{
-              opacity: updatedUser.status === 'disabled' ? 0.5 : 1,
-              'pointer-events':
-                updatedUser.status === 'disabled' ? 'none' : 'auto'
+              opacity: user.status === 'disabled' ? 0.5 : 1,
+              'pointer-events': user.status === 'disabled' ? 'none' : 'auto'
             }"
           >
             <mat-form-field class="dialog-add-user__field">
@@ -118,21 +115,20 @@
         <div
           class="user-setup__col"
           [ngStyle]="{
-            opacity: updatedUser.status === 'disabled' ? 0.5 : 1,
-            'pointer-events':
-              updatedUser.status === 'disabled' ? 'none' : 'auto'
+            opacity: user.status === 'disabled' ? 0.5 : 1,
+            'pointer-events': user.status === 'disabled' ? 'none' : 'auto'
           }"
         >
           <button mat-icon-button disabled></button>
           <mat-checkbox
             color="primary"
-            [checked]="updatedUser.superadmin"
+            [checked]="user.superadmin"
             (change)="onSuperadminChange($event)"
             >Superadmin</mat-checkbox
           >
           <mat-tree
             [dataSource]="dataSource"
-            [treeControl]="treeControl"
+            [treeControl]="checklistTree.treeControl"
             class="user-setup__tree"
           >
             <mat-tree-node
@@ -144,13 +140,13 @@
               <mat-checkbox
                 color="primary"
                 class="checklist-leaf-node"
-                [checked]="checklistSelection.isSelected(node)"
-                (change)="permissionLeafItemSelectionToggle(node)"
+                [checked]="checklistTree.checklistSelection.isSelected(node)"
+                (change)="checklistTree.permissionLeafItemSelectionToggle(node)"
                 >{{ node.item }}</mat-checkbox
               >
             </mat-tree-node>
             <mat-tree-node
-              *matTreeNodeDef="let node; when: hasChild"
+              *matTreeNodeDef="let node; when: checklistTree.hasChild"
               matTreeNodePadding
             >
               <button
@@ -160,7 +156,7 @@
               >
                 <mat-icon class="mat-icon-rtl-mirror">
                   {{
-                    treeControl.isExpanded(node)
+                    checklistTree.treeControl.isExpanded(node)
                       ? 'expand_more'
                       : 'chevron_right'
                   }}
@@ -168,9 +164,11 @@
               </button>
               <mat-checkbox
                 color="primary"
-                [checked]="descendantsAllSelected(node)"
-                [indeterminate]="descendantsPartiallySelected(node)"
-                (change)="permissionItemSelectionToggle(node)"
+                [checked]="checklistTree.descendantsAllSelected(node)"
+                [indeterminate]="
+                  checklistTree.descendantsPartiallySelected(node)
+                "
+                (change)="checklistTree.permissionItemSelectionToggle(node)"
                 >{{ node.item }}</mat-checkbox
               >
             </mat-tree-node>
