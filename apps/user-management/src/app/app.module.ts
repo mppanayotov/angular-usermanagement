@@ -29,6 +29,7 @@ import { UsersService } from './users.service';
 import { UserListComponent } from './user-list/user-list.component';
 import { UserSetupComponent } from './user-setup/user-setup.component';
 import { SharedUsersModule } from '@angular-usermanagement/shared/users';
+import { UserSetupChecklistDatabaseModule } from '@angular-usermanagement/user-setup/checklist-database';
 import { DialogAddUserComponent } from './dialog-add-user/dialog-add-user.component';
 import { DialogDeleteUserComponent } from './dialog-delete-user/dialog-delete-user.component';
 
@@ -75,6 +76,7 @@ import { DialogDeleteUserComponent } from './dialog-delete-user/dialog-delete-us
     MatTreeModule,
     MatCheckboxModule,
     SharedUsersModule,
+    UserSetupChecklistDatabaseModule,
   ],
   providers: [UsersService],
   bootstrap: [AppComponent],

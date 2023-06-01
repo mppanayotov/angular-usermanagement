@@ -15,7 +15,15 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@angular-usermanagement/shared/users": ["libs/shared/users/src/index.ts"]
+      "@angular-usermanagement/shared/users": [
+        "libs/shared/users/src/index.ts"
+      ],
+      "@angular-usermanagement/user-setup/checklist-database": [
+        "libs/user-setup/checklist-database/src/index.ts"
+      ],
+      "@angular-usermanagement/user-setup/checklist-tree": [
+        "libs/user-setup/checklist-tree/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

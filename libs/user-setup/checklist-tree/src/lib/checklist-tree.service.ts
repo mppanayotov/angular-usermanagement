@@ -1,54 +1,32 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { SelectionModel } from '@angular/cdk/collections';
+import { Injectable } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import {
   MatTreeFlatDataSource,
   MatTreeFlattener,
 } from '@angular/material/tree';
-import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
-import { Store } from '@ngrx/store';
 import { UserSetupChecklistDatabaseService } from '@angular-usermanagement/user-setup/checklist-database';
+import { SelectionModel } from '@angular/cdk/collections';
 import { SharedUsersEntity } from '@angular-usermanagement/shared/users';
-import { selectAllUsers } from '@angular-usermanagement/shared/users';
-import * as SharedUsersActions from '@angular-usermanagement/shared/users';
-import { MatCheckboxChange } from '@angular/material/checkbox';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 /**
  * Node for permission item
  */
-export class PermissionItemNode {
+class PermissionItemNode {
   children: PermissionItemNode[] = [];
   item = '';
   isChecked?: boolean;
 }
 
 /** Flat permission item node with expandable and level information */
-export class PermissionItemFlatNode {
+class PermissionItemFlatNode {
   item = '';
   level = 0;
   expandable = false;
   isChecked?: boolean;
 }
 
-export interface PatchPermissionEntry {
-  name: string;
-  value: boolean;
-}
-
-@Component({
-  selector: 'angular-usermanagement-user-setup',
-  templateUrl: './user-setup.component.html',
-  styleUrls: ['./user-setup.component.scss'],
-})
-export class UserSetupComponent implements OnInit {
-  users$ = this.store.select(selectAllUsers);
-  users: SharedUsersEntity[] = [];
-  user?: SharedUsersEntity;
-  updatedUser?: SharedUsersEntity;
-
+@Injectable()
+export class UserSetupChecklistTreeService {
   /** Map from flat node to nested node. This helps us finding the nested node to be modified */
   flatNodeMap = new Map<PermissionItemFlatNode, PermissionItemNode>();
 
@@ -68,22 +46,7 @@ export class UserSetupComponent implements OnInit {
     true /* multiple */
   );
 
-  form = this.formBuilder.group({
-    firstName: [this.updatedUser?.firstName, Validators.required],
-    lastName: [this.updatedUser?.lastName, Validators.required],
-    email: [this.updatedUser?.email, [Validators.required, Validators.email]],
-    role: [this.updatedUser?.role, Validators.required],
-  });
-
-  roles = ['user', 'admin'];
-
-  constructor(
-    private route: ActivatedRoute,
-    private location: Location,
-    private store: Store,
-    private _database: UserSetupChecklistDatabaseService,
-    private formBuilder: FormBuilder
-  ) {
+  constructor(private _database: UserSetupChecklistDatabaseService) {
     this.treeFlattener = new MatTreeFlattener(
       this.transformer,
       this.getLevel,
@@ -102,109 +65,6 @@ export class UserSetupComponent implements OnInit {
     _database.dataChange.subscribe((data) => {
       this.dataSource.data = data;
     });
-  }
-
-  ngOnInit(): void {
-    this.setUser();
-  }
-
-  setUser(): void {
-    const id = parseInt(this.route.snapshot.paramMap.get('id')!, 10);
-    this.users$.subscribe((users) => {
-      this.users = users;
-      this.user = this.updatedUser = users.find((user) => user.id == id);
-      this.user && this._database.initialize(this.user?.permissions);
-      this.form = this.formBuilder.group({
-        firstName: [this.updatedUser?.firstName, Validators.required],
-        lastName: [this.updatedUser?.lastName, Validators.required],
-        email: [
-          this.updatedUser?.email,
-          [Validators.required, Validators.email],
-        ],
-        role: [this.updatedUser?.role, Validators.required],
-      });
-      this.checklistSelection = new SelectionModel<PermissionItemFlatNode>(
-        true,
-        this.treeControl.dataNodes.filter((node) => node.isChecked)
-      );
-    });
-  }
-
-  // Update store values with new
-  saveAndGoBack(): void {
-    if (
-      this.updatedUser &&
-      this.form.value.firstName &&
-      this.form.value.lastName &&
-      this.form.value.email &&
-      this.form.value.role
-    ) {
-      this.updatedUser = {
-        ...this.updatedUser,
-        firstName: this.form.value.firstName,
-        lastName: this.form.value.lastName,
-        email: this.form.value.email,
-        role: this.form.value.role,
-      };
-
-      this.store.dispatch(
-        SharedUsersActions.updateUser({ user: this.updatedUser })
-      );
-    }
-    this.location.back();
-  }
-
-  // Patch new user object with values from slide toggles
-  onStatusChange($event: MatSlideToggleChange) {
-    if (this.updatedUser) {
-      this.updatedUser = {
-        ...this.updatedUser,
-        status: $event.checked ? 'active' : 'disabled',
-      };
-    }
-  }
-
-  // Patch new user object with values from slide toggles
-  onSuperadminChange($event: MatCheckboxChange) {
-    if (this.updatedUser) {
-      this.updatedUser = {
-        ...this.updatedUser,
-        superadmin: $event.checked,
-      };
-    }
-  }
-
-  // Determine the error message for form fields
-  getErrorMessage(field: FormControl) {
-    if (field == this.form.controls.email) {
-      if (this.form.controls.email.hasError('required')) {
-        return 'You must enter a value';
-      }
-
-      return this.form.controls.email.hasError('email') && 'Not a valid email';
-    }
-
-    if (field.hasError('required')) {
-      return 'You must enter a value';
-    }
-
-    return '';
-  }
-
-  // Patch new user object with values from checkboxes
-  patchCheckboxes(patchParent: string, patchChild: PatchPermissionEntry): void {
-    if (this.updatedUser) {
-      this.updatedUser = {
-        ...this.updatedUser,
-        permissions: {
-          ...this.updatedUser.permissions,
-          [patchParent]: {
-            ...this.updatedUser.permissions[patchParent],
-            [patchChild.name]: patchChild.value,
-          },
-        },
-      };
-    }
   }
 
   getLevel = (node: PermissionItemFlatNode) => node.level;
@@ -256,7 +116,10 @@ export class UserSetupComponent implements OnInit {
   }
 
   /** Toggle the permission item selection. Select/deselect all the descendants node */
-  permissionItemSelectionToggle(node: PermissionItemFlatNode): void {
+  permissionItemSelectionToggle(
+    node: PermissionItemFlatNode,
+    updatedUser: SharedUsersEntity
+  ): void {
     this.checklistSelection.toggle(node);
     const descendants = this.treeControl.getDescendants(node);
     this.checklistSelection.isSelected(node)
@@ -268,7 +131,7 @@ export class UserSetupComponent implements OnInit {
       this.checklistSelection.isSelected(child);
       child.isChecked = this.checklistSelection.isSelected(child);
 
-      if (this.updatedUser && node.expandable) {
+      if (updatedUser && node.expandable) {
         const patchParent = [node.item].toString();
         const patchChild: PatchPermissionEntry = {
           name: child.item,
