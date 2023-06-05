@@ -7,6 +7,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
   templateUrl: './dialog-add-user.component.html',
   styleUrls: ['./dialog-add-user.component.scss'],
 })
+
 export class DialogAddUserComponent {
   form = this.formBuilder.group({
     firstName: ['', Validators.required],

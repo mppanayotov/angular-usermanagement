@@ -21,6 +21,15 @@
       "@angular-usermanagement/shared/users": [
         "libs/shared/users/src/index.ts"
       ],
+      "@angular-usermanagement/user-list/dialog-add-user": [
+        "libs/user-list/dialog-add-user/src/index.ts"
+      ],
+      "@angular-usermanagement/user-list/dialog-delete-user": [
+        "libs/user-list/dialog-delete-user/src/index.ts"
+      ],
+      "@angular-usermanagement/user-list/user-list-page": [
+        "libs/user-list/user-list-page/src/index.ts"
+      ],
       "@angular-usermanagement/user-setup/checklist-database": [
         "libs/user-setup/checklist-database/src/index.ts"
       ],

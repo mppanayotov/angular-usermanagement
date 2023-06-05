@@ -26,24 +26,17 @@ import { MatTreeModule } from '@angular/material/tree';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { UsersService } from './users.service';
-import { UserListComponent } from './user-list/user-list.component';
+// import { UserListComponent } from './user-list/user-list.component';
+import { UserListUserListPageModule } from '@angular-usermanagement/user-list/user-list-page';
 import { UserSetupComponent } from './user-setup/user-setup.component';
 import { SharedUsersModule } from '@angular-usermanagement/shared/users';
 import { SharedStylesModule } from '@angular-usermanagement/shared/styles';
 import { UserSetupChecklistDatabaseModule } from '@angular-usermanagement/user-setup/checklist-database';
 import { UserSetupChecklistTreeModule } from '@angular-usermanagement/user-setup/checklist-tree';
 import { UserSetupChecklistModelsModule } from '@angular-usermanagement/user-setup/checklist-models';
-import { DialogAddUserComponent } from './dialog-add-user/dialog-add-user.component';
-import { DialogDeleteUserComponent } from './dialog-delete-user/dialog-delete-user.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    UserListComponent,
-    UserSetupComponent,
-    DialogAddUserComponent,
-    DialogDeleteUserComponent,
-  ],
+  declarations: [AppComponent, UserSetupComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -79,6 +72,7 @@ import { DialogDeleteUserComponent } from './dialog-delete-user/dialog-delete-us
     MatTreeModule,
     MatCheckboxModule,
     SharedUsersModule,
+    UserListUserListPageModule,
     UserSetupChecklistDatabaseModule,
     UserSetupChecklistTreeModule,
     UserSetupChecklistModelsModule,

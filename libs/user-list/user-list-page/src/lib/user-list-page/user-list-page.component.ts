@@ -3,8 +3,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogAddUserComponent } from '../dialog-add-user/dialog-add-user.component';
-import { DialogDeleteUserComponent } from '../dialog-delete-user/dialog-delete-user.component';
+import { UserListDialogAddUserModule } from '@angular-usermanagement/user-list/dialog-add-user';
+import { UserListDialogDeleteUserModule } from '@angular-usermanagement/user-list/dialog-delete-user';
 import { Store } from '@ngrx/store';
 import {
   SharedUsersEntity,
@@ -15,11 +15,11 @@ import * as SharedUsersActions from '@angular-usermanagement/shared/users';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 @Component({
-  selector: 'angular-usermanagement-user-list',
-  templateUrl: './user-list.component.html',
-  styleUrls: ['./user-list.component.scss'],
+  selector: 'angular-usermanagement-user-list-page',
+  templateUrl: './user-list-page.component.html',
+  styleUrls: ['./user-list-page.component.scss'],
 })
-export class UserListComponent implements AfterViewInit {
+export class UserListPageComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -61,7 +61,7 @@ export class UserListComponent implements AfterViewInit {
   }
 
   openAddDialog(): void {
-    const dialogRef = this.dialog.open(DialogAddUserComponent, {
+    const dialogRef = this.dialog.open(UserListDialogAddUserModule, {
       data: {},
     });
 
@@ -71,8 +71,8 @@ export class UserListComponent implements AfterViewInit {
     });
   }
 
-  openDeleteDialog(row: UserListComponent): void {
-    const dialogRef = this.dialog.open(DialogDeleteUserComponent, {
+  openDeleteDialog(row: UserListPageComponent): void {
+    const dialogRef = this.dialog.open(UserListDialogDeleteUserModule, {
       data: row,
     });
 
