@@ -21,6 +21,7 @@
         ],
         "styles": [
           "@angular/material/prebuilt-themes/indigo-pink.css",
+          "libs/shared/styles/src/index.scss",
           "apps/user-management/src/styles.scss"
         ],
         "scripts": []

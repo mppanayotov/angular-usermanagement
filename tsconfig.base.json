@@ -15,6 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@angular-usermanagement/shared/styles": [
+        "libs/shared/styles/src/index.ts"
+      ],
       "@angular-usermanagement/shared/users": [
         "libs/shared/users/src/index.ts"
       ],
