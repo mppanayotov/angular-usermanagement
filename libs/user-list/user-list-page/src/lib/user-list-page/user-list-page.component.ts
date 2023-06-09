@@ -3,8 +3,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
-import { UserListDialogAddUserModule } from '@angular-usermanagement/user-list/dialog-add-user';
-import { UserListDialogDeleteUserModule } from '@angular-usermanagement/user-list/dialog-delete-user';
 import { Store } from '@ngrx/store';
 import {
   SharedUsersEntity,
@@ -13,6 +11,8 @@ import {
 import { selectAllUsers } from '@angular-usermanagement/shared/users';
 import * as SharedUsersActions from '@angular-usermanagement/shared/users';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { DialogAddUserComponent } from '@angular-usermanagement/user-list/dialog-add-user';
+import { DialogDeleteUserComponent } from '@angular-usermanagement/user-list/dialog-delete-user';
 
 @Component({
   selector: 'angular-usermanagement-user-list-page',
@@ -61,7 +61,7 @@ export class UserListPageComponent implements AfterViewInit {
   }
 
   openAddDialog(): void {
-    const dialogRef = this.dialog.open(UserListDialogAddUserModule, {
+    const dialogRef = this.dialog.open(DialogAddUserComponent, {
       data: {},
     });
 
@@ -72,7 +72,7 @@ export class UserListPageComponent implements AfterViewInit {
   }
 
   openDeleteDialog(row: UserListPageComponent): void {
-    const dialogRef = this.dialog.open(UserListDialogDeleteUserModule, {
+    const dialogRef = this.dialog.open(DialogDeleteUserComponent, {
       data: row,
     });
 
