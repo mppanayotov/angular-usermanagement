@@ -38,6 +38,9 @@
       ],
       "@angular-usermanagement/user-setup/checklist-tree": [
         "libs/user-setup/checklist-tree/src/index.ts"
+      ],
+      "@angular-usermanagement/user-setup/user-setup-page": [
+        "libs/user-setup/user-setup-page/src/index.ts"
       ]
     }
   },

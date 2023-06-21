@@ -19,11 +19,11 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 @Component({
-  selector: 'angular-usermanagement-user-setup',
-  templateUrl: './user-setup.component.html',
-  styleUrls: ['./user-setup.component.scss'],
+  selector: 'angular-usermanagement-user-setup-page',
+  templateUrl: './user-setup-page.component.html',
+  styleUrls: ['./user-setup-page.component.scss'],
 })
-export class UserSetupComponent implements OnInit {
+export class UserSetupPageComponent implements OnInit {
   users$ = this.store.select(selectAllUsers);
   user?: SharedUsersEntity;
   dataSource: MatTreeFlatDataSource<PermissionItemNode, PermissionItemFlatNode>;

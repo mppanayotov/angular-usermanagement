@@ -1,14 +1,9 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
-import { AppComponent } from './app.component';
-import { StoreModule } from '@ngrx/store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { CommonModule } from '@angular/common';
+import { UserSetupPageComponent } from './user-setup-page/user-setup-page.component';
 
 import { EffectsModule } from '@ngrx/effects';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { appRoutes } from './app.routes';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { MatTableModule } from '@angular/material/table';
@@ -25,30 +20,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
-import { UsersService } from './users.service';
-import { SharedUsersModule } from '@angular-usermanagement/shared/users';
-
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [UserSetupPageComponent],
   imports: [
-    BrowserModule,
-    HttpClientModule,
-    StoreModule.forRoot(
-      {},
+    CommonModule,
+    EffectsModule,
+    RouterModule.forChild([
       {
-        metaReducers: [],
-        runtimeChecks: {
-          strictActionImmutability: true,
-          strictStateImmutability: true,
-        },
-      }
-    ),
-    RouterModule.forRoot(appRoutes, { initialNavigation: 'enabledBlocking' }),
-    StoreDevtoolsModule.instrument({
-      maxAge: 25,
-    }),
-    EffectsModule.forRoot([]),
-    BrowserAnimationsModule,
+        path: '',
+        pathMatch: 'full',
+        component: UserSetupPageComponent,
+      },
+    ]),
     FormsModule,
     ReactiveFormsModule,
     MatTableModule,
@@ -64,9 +47,6 @@ import { SharedUsersModule } from '@angular-usermanagement/shared/users';
     MatFormFieldModule,
     MatTreeModule,
     MatCheckboxModule,
-    SharedUsersModule,
   ],
-  providers: [UsersService],
-  bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class UserSetupUserSetupPageModule {}

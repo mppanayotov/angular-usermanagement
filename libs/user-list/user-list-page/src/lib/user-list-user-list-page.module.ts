@@ -1,7 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
 import { UserListPageComponent } from './user-list-page/user-list-page.component';
+
+import { EffectsModule } from '@ngrx/effects';
+import { RouterModule } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
@@ -20,6 +24,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
   declarations: [UserListPageComponent],
   imports: [
     CommonModule,
+    EffectsModule,
     RouterModule.forChild([
       {
         path: '',
@@ -27,6 +32,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
         component: UserListPageComponent,
       },
     ]),
+    FormsModule,
+    ReactiveFormsModule,
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,

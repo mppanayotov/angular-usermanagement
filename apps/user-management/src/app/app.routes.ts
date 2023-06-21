@@ -1,5 +1,4 @@
 import { Route } from '@angular/router';
-import { UserSetupComponent } from './user-setup/user-setup.component';
 
 export const appRoutes: Route[] = [
   { path: '', redirectTo: '/user-list', pathMatch: 'full' },
@@ -10,5 +9,11 @@ export const appRoutes: Route[] = [
         (module) => module.UserListUserListPageModule
       ),
   },
-  { path: 'user/:id', component: UserSetupComponent },
+  {
+    path: 'user/:id',
+    loadChildren: () =>
+      import('@angular-usermanagement/user-setup/user-setup-page').then(
+        (module) => module.UserSetupUserSetupPageModule
+      ),
+  },
 ];
