@@ -43,3 +43,6 @@ Thumbs.db
 # Lock files
 package-lock.json
 yarn.lock
+
+#WSL
+*.Identifier
